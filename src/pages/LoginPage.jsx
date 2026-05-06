@@ -1,26 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { login } from "../services/api";
-import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { loginUser } = useAuth();
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       const res = await login({ email, password });
-      loginUser(res.data.user, res.data.token);
-      toast.success("Welcome back! 🌍");
+      localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      toast.error("Invalid email or password!");
+      setError(err.response?.data?.message || "Invalid email or password!");
     } finally {
       setLoading(false);
     }
@@ -35,6 +33,7 @@ export default function LoginPage() {
         </div>
         <div className="auth-form">
           <h2>Welcome Back</h2>
+          {error && <p style={{ color: "#f87171", marginBottom: "12px", textAlign: "center" }}>{error}</p>}
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label>Email Address</label>
@@ -61,8 +60,7 @@ export default function LoginPage() {
             </button>
           </form>
           <div className="auth-switch">
-            Don't have an account?{" "}
-            <Link to="/signup">Sign Up</Link>
+            Don't have an account? <Link to="/login">Sign Up</Link>
           </div>
         </div>
       </div>

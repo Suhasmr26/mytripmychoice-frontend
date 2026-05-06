@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signup } from "../services/api";
-import toast from "react-hot-toast";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       await signup({ name, email, password });
-      toast.success("Account created! Please login 🎉");
       navigate("/login");
     } catch (err) {
-      toast.error("Email already exists or something went wrong!");
+      setError(err.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -33,6 +33,7 @@ export default function SignupPage() {
         </div>
         <div className="auth-form">
           <h2>Create Account</h2>
+          {error && <p style={{ color: "#f87171", marginBottom: "12px", textAlign: "center" }}>{error}</p>}
           <form onSubmit={handleSignup}>
             <div className="form-group">
               <label>Full Name</label>
@@ -69,8 +70,7 @@ export default function SignupPage() {
             </button>
           </form>
           <div className="auth-switch">
-            Already have an account?{" "}
-            <Link to="/login">Sign In</Link>
+            Already have an account? <Link to="/login">Sign In</Link>
           </div>
         </div>
       </div>
