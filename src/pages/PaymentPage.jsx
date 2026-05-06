@@ -21,7 +21,7 @@ export default function PaymentPage() {
 
     try {
       // Step 1: Create order
-      const orderRes = await fetch("http://localhost:8080/api/payment/create-order", {
+      const orderRes = await fetch("https://mytripmychoice-backend-production.up.railway.app/api/payment/create-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export default function PaymentPage() {
         handler: async (response) => {
           try {
             // Step 3: Verify payment
-            const verifyRes = await fetch("http://localhost:8080/api/payment/verify", {
+            const verifyRes = await fetch("https://mytripmychoice-backend-production.up.railway.app/api/payment/verify", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

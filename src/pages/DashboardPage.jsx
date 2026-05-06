@@ -44,7 +44,7 @@ export default function DashboardPage() {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/auth/profile", {
+      const res = await fetch("https://mytripmychoice-backend-production.up.railway.app/api/auth/profile", {
         headers: { Authorization: token },
       });
       const data = await res.json();
@@ -88,7 +88,7 @@ export default function DashboardPage() {
     setLoadingStep(0);
 
     try {
-      const res = await fetch("http://localhost:8080/api/trips/generate", {
+      const res = await fetch("https://mytripmychoice-backend-production.up.railway.app/api/trips/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: token },
         body: JSON.stringify({
