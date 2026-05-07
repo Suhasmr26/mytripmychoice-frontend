@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE = 'https://mytripmychoice-backend-production.up.railway.app/api';
+const BASE = 'https://mytripmychoice-backend.onrender.com/api';
 
 const getHeaders = () => ({
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
