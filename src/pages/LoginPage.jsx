@@ -59,9 +59,9 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
-          <div className="auth-switch">
-            Don't have an account? <Link to="/login">Sign Up</Link>
-          </div>
+         <div className="auth-switch">
+  Don't have an account? <Link to="/signup">Sign Up</Link>
+</div>
         </div>
       </div>
     </div>
