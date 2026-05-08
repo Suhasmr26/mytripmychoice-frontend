@@ -15,6 +15,7 @@ export default function DashboardPage() {
   const [destination, setDestination] = useState("");
   const [budget, setBudget] = useState("");
   const [travelMode, setTravelMode] = useState("");
+  const [days, setDays] = useState("");
   const [members, setMembers] = useState([{ name: "", age: "", sex: "" }]);
 
   const loadingMessages = [
@@ -77,6 +78,7 @@ export default function DashboardPage() {
     if (!destination.trim()) return setError("Please enter a destination.");
     if (!budget || isNaN(budget)) return setError("Please enter a valid budget.");
     if (!travelMode) return setError("Please select a travel mode.");
+    if (!days || isNaN(days) || days < 1) return setError("Please enter number of days.");
     for (let i = 0; i < members.length; i++) {
       if (!members[i].name.trim()) return setError(`Please enter name for traveler ${i + 1}.`);
       if (!members[i].age || isNaN(members[i].age)) return setError(`Please enter valid age for traveler ${i + 1}.`);
@@ -96,6 +98,7 @@ export default function DashboardPage() {
           destination,
           budget: parseFloat(budget),
           travelMode,
+          days: parseInt(days),
           members: members.map((m) => ({
             name: m.name,
             age: parseInt(m.age),
@@ -126,7 +129,6 @@ export default function DashboardPage() {
     { id: "country", label: "International", icon: "✈️", desc: "Explore destinations outside India", color: "#a78bfa" },
   ];
 
-  // FULL SCREEN LOADING
   if (loading) {
     return (
       <>
@@ -134,108 +136,26 @@ export default function DashboardPage() {
           @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
           * { box-sizing: border-box; margin: 0; padding: 0; }
           body { background: #0d1117; font-family: 'DM Sans', sans-serif; }
-          .ld-root {
-            min-height: 100vh;
-            background: #0d1117;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 24px;
-          }
-          .ld-globe {
-            font-size: 5rem;
-            margin-bottom: 24px;
-            animation: float 3s ease-in-out infinite;
-          }
-          @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-16px); }
-          }
-          .ld-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 900;
-            color: #fff;
-            margin-bottom: 8px;
-          }
-          .ld-title span {
-            background: linear-gradient(90deg, #fbbf24, #f97316);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-          }
-          .ld-dest {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin-bottom: 48px;
-          }
-          .ld-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 48px;
-            min-height: 80px;
-          }
-          .ld-step-icon {
-            font-size: 2.5rem;
-            animation: popIn 0.4s ease;
-          }
-          @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-          }
-          .ld-step-text {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #e2e8f0;
-            animation: fadeIn 0.4s ease;
-          }
-          @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(8px); }
-            100% { opacity: 1; transform: translateY(0); }
-          }
-          .ld-bar-wrap {
-            width: 320px;
-            height: 6px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 100px;
-            overflow: hidden;
-            margin-bottom: 20px;
-          }
-          .ld-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #a78bfa, #f97316);
-            border-radius: 100px;
-            animation: progress 120s linear forwards;
-          }
-          @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 95%; }
-          }
-          .ld-note {
-            font-size: 0.78rem;
-            color: #334155;
-          }
-          .ld-dots {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 32px;
-          }
-          .ld-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: #a78bfa;
-            animation: bounce 1.2s ease-in-out infinite;
-          }
+          .ld-root { min-height: 100vh; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+          .ld-globe { font-size: 5rem; margin-bottom: 24px; animation: float 3s ease-in-out infinite; }
+          @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-16px); } }
+          .ld-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
+          .ld-title span { background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+          .ld-dest { color: #64748b; font-size: 0.95rem; margin-bottom: 48px; }
+          .ld-step { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 48px; min-height: 80px; }
+          .ld-step-icon { font-size: 2.5rem; animation: popIn 0.4s ease; }
+          @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+          .ld-step-text { font-size: 1.1rem; font-weight: 500; color: #e2e8f0; animation: fadeIn 0.4s ease; }
+          @keyframes fadeIn { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
+          .ld-bar-wrap { width: 320px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; margin-bottom: 20px; }
+          .ld-bar { height: 100%; background: linear-gradient(90deg, #a78bfa, #f97316); border-radius: 100px; animation: progress 120s linear forwards; }
+          @keyframes progress { 0% { width: 0%; } 100% { width: 95%; } }
+          .ld-note { font-size: 0.78rem; color: #334155; }
+          .ld-dots { display: flex; gap: 8px; justify-content: center; margin-top: 32px; }
+          .ld-dot { width: 8px; height: 8px; border-radius: 50%; background: #a78bfa; animation: bounce 1.2s ease-in-out infinite; }
           .ld-dot:nth-child(2) { animation-delay: 0.2s; background: #fbbf24; }
           .ld-dot:nth-child(3) { animation-delay: 0.4s; background: #f97316; }
-          @keyframes bounce {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.4); opacity: 1; }
-          }
+          @keyframes bounce { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.4); opacity: 1; } }
         `}</style>
         <div className="ld-root">
           <div className="ld-globe">🌏</div>
@@ -245,9 +165,7 @@ export default function DashboardPage() {
             <div className="ld-step-icon" key={loadingStep + "icon"}>{loadingMessages[loadingStep].icon}</div>
             <div className="ld-step-text" key={loadingStep + "text"}>{loadingMessages[loadingStep].text}</div>
           </div>
-          <div className="ld-bar-wrap">
-            <div className="ld-bar" />
-          </div>
+          <div className="ld-bar-wrap"><div className="ld-bar" /></div>
           <div className="ld-note">⏳ This usually takes 1–2 minutes. Please don't close this tab.</div>
           <div className="ld-dots">
             <div className="ld-dot" />
@@ -380,6 +298,10 @@ export default function DashboardPage() {
                   <option value="car">🚗 Car</option>
                   <option value="any">🌐 Any</option>
                 </select>
+              </div>
+              <div className="db-form-group">
+                <label className="db-label">Number of Days *</label>
+                <input className="db-input" type="number" placeholder="e.g. 5" min="1" max="30" value={days} onChange={(e) => setDays(e.target.value)} />
               </div>
             </div>
           </div>
