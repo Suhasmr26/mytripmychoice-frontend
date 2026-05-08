@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -8,6 +9,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -15,7 +17,7 @@ export default function LoginPage() {
     setError("");
     try {
       const res = await login({ email, password });
-      localStorage.setItem("token", res.data.token);
+      loginUser(res.data.user, res.data.token);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Invalid email or password!");
@@ -59,9 +61,9 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
-         <div className="auth-switch">
-  Don't have an account? <Link to="/signup">Sign Up</Link>
-</div>
+          <div className="auth-switch">
+            Don't have an account? <Link to="/signup">Sign Up</Link>
+          </div>
         </div>
       </div>
     </div>
