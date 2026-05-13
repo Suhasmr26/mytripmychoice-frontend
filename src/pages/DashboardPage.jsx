@@ -12,6 +12,7 @@ export default function DashboardPage() {
   const [error, setError] = useState("");
   const [visible, setVisible] = useState(false);
 
+  const [source, setSource] = useState("");
   const [destination, setDestination] = useState("");
   const [budget, setBudget] = useState("");
   const [travelMode, setTravelMode] = useState("");
@@ -75,10 +76,11 @@ export default function DashboardPage() {
 
   const handleGenerate = async () => {
     if (!tripType) return setError("Please select a trip type first.");
+    if (!source.trim()) return setError("Please enter your source city.");
     if (!destination.trim()) return setError("Please enter a destination.");
     if (!budget || isNaN(budget)) return setError("Please enter a valid budget.");
     if (!travelMode) return setError("Please select a travel mode.");
-    if (!days || isNaN(days) || days < 1) return setError("Please enter number of days.");
+    if (!days || isNaN(days) || parseInt(days) < 1) return setError("Please enter a valid number of days.");
     for (let i = 0; i < members.length; i++) {
       if (!members[i].name.trim()) return setError(`Please enter name for traveler ${i + 1}.`);
       if (!members[i].age || isNaN(members[i].age)) return setError(`Please enter valid age for traveler ${i + 1}.`);
@@ -95,6 +97,7 @@ export default function DashboardPage() {
         headers: { "Content-Type": "application/json", Authorization: token },
         body: JSON.stringify({
           tripType,
+          source,
           destination,
           budget: parseFloat(budget),
           travelMode,
@@ -139,9 +142,11 @@ export default function DashboardPage() {
           .ld-root { min-height: 100vh; background: #0d1117; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
           .ld-globe { font-size: 5rem; margin-bottom: 24px; animation: float 3s ease-in-out infinite; }
           @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-16px); } }
-          .ld-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 8px; }
-          .ld-title span { background: linear-gradient(90deg, #fbbf24, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-          .ld-dest { color: #64748b; font-size: 0.95rem; margin-bottom: 48px; }
+          .ld-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 16px; }
+          .ld-route { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+          .ld-route-city { font-size: 1rem; font-weight: 700; color: #fbbf24; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); padding: 6px 14px; border-radius: 100px; }
+          .ld-route-arrow { color: #a78bfa; font-size: 1.4rem; }
+          .ld-dest { color: #64748b; font-size: 0.95rem; margin-bottom: 48px; margin-top: 12px; }
           .ld-step { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 48px; min-height: 80px; }
           .ld-step-icon { font-size: 2.5rem; animation: popIn 0.4s ease; }
           @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -159,8 +164,13 @@ export default function DashboardPage() {
         `}</style>
         <div className="ld-root">
           <div className="ld-globe">🌏</div>
-          <div className="ld-title">Planning Your Trip to<br /><span>{destination}</span></div>
-          <div className="ld-dest">Our AI is crafting your perfect itinerary...</div>
+          <div className="ld-title">Planning Your Trip</div>
+          <div className="ld-route">
+            <span className="ld-route-city">📍 {source}</span>
+            <span className="ld-route-arrow">✈️ ──►</span>
+            <span className="ld-route-city">🏁 {destination}</span>
+          </div>
+          <div className="ld-dest">Our AI is crafting your perfect {days}-day itinerary...</div>
           <div className="ld-step">
             <div className="ld-step-icon" key={loadingStep + "icon"}>{loadingMessages[loadingStep].icon}</div>
             <div className="ld-step-text" key={loadingStep + "text"}>{loadingMessages[loadingStep].text}</div>
@@ -168,9 +178,7 @@ export default function DashboardPage() {
           <div className="ld-bar-wrap"><div className="ld-bar" /></div>
           <div className="ld-note">⏳ This usually takes 1–2 minutes. Please don't close this tab.</div>
           <div className="ld-dots">
-            <div className="ld-dot" />
-            <div className="ld-dot" />
-            <div className="ld-dot" />
+            <div className="ld-dot" /><div className="ld-dot" /><div className="ld-dot" />
           </div>
         </div>
       </>
@@ -218,6 +226,9 @@ export default function DashboardPage() {
         .db-input:focus { border-color: #a78bfa; }
         .db-input::placeholder { color: #334155; }
         select.db-input option { background: #131c27; }
+        .db-route-preview { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 12px; background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.25); border-radius: 12px; padding: 12px 16px; flex-wrap: wrap; }
+        .db-route-chip { font-size: 0.85rem; font-weight: 700; color: #fbbf24; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); padding: 5px 14px; border-radius: 100px; }
+        .db-route-arrow { color: #a78bfa; font-size: 1.1rem; }
         .db-members-section { margin-bottom: 20px; }
         .db-member-card { background: #131c27; border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 20px; margin-bottom: 12px; }
         .db-member-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -278,18 +289,39 @@ export default function DashboardPage() {
           <div className="db-section-label">Step 2 — Trip Details</div>
           <div className="db-form-card">
             <div className="db-form-grid">
-              <div className="db-form-group full">
-                <label className="db-label">Destination *</label>
+
+              <div className="db-form-group">
+                <label className="db-label">📍 From (Source City) *</label>
+                <input className="db-input" placeholder="e.g. Bengaluru" value={source} onChange={(e) => setSource(e.target.value)} disabled={!tripType} />
+              </div>
+
+              <div className="db-form-group">
+                <label className="db-label">🏁 To (Destination) *</label>
                 <input className="db-input"
                   placeholder={tripType === "local" ? "e.g. Bengaluru city tour" : tripType === "state" ? "e.g. Goa, Rajasthan" : tripType === "country" ? "e.g. Paris, Thailand" : "Select a trip type first"}
                   value={destination} onChange={(e) => setDestination(e.target.value)} disabled={!tripType} />
               </div>
+
+              {source && destination && (
+                <div className="db-route-preview">
+                  <span className="db-route-chip">📍 {source}</span>
+                  <span className="db-route-arrow">✈️ ──────►</span>
+                  <span className="db-route-chip">🏁 {destination}</span>
+                </div>
+              )}
+
               <div className="db-form-group">
-                <label className="db-label">Budget (₹) *</label>
+                <label className="db-label">💰 Budget (₹) *</label>
                 <input className="db-input" type="number" placeholder="e.g. 20000" value={budget} onChange={(e) => setBudget(e.target.value)} />
               </div>
+
               <div className="db-form-group">
-                <label className="db-label">Travel Mode *</label>
+                <label className="db-label">📅 Number of Days *</label>
+                <input className="db-input" type="number" placeholder="e.g. 3" min="1" value={days} onChange={(e) => setDays(e.target.value)} />
+              </div>
+
+              <div className="db-form-group full">
+                <label className="db-label">🚗 Travel Mode *</label>
                 <select className="db-input" value={travelMode} onChange={(e) => setTravelMode(e.target.value)}>
                   <option value="">Select mode</option>
                   <option value="flight">✈️ Flight</option>
@@ -299,10 +331,7 @@ export default function DashboardPage() {
                   <option value="any">🌐 Any</option>
                 </select>
               </div>
-              <div className="db-form-group">
-                <label className="db-label">Number of Days *</label>
-                <input className="db-input" type="number" placeholder="e.g. 5" min="1" max="30" value={days} onChange={(e) => setDays(e.target.value)} />
-              </div>
+
             </div>
           </div>
 
